@@ -39,5 +39,6 @@ def main():
 
     print(f"Found {future_import_count} __future__ imports")
 
+
 if __name__ == "__main__":
     main()
