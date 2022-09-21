@@ -1,4 +1,4 @@
-VERSION := `poetry run python -c "import sys; from moelib import __version__ as version; sys.stdout.write(version)"`
+VERSION := `poetry run python -c "import sys; from flake8_scripts import __version__ as version; sys.stdout.write(version)"`
 
 test:
   poetry run pytest --workers auto
@@ -15,7 +15,7 @@ build:
   poetry build
 
 publish:
-  touch moelib/py.typed
+  touch flake8_scripts/py.typed
   poetry publish --build
   git tag "v{{VERSION}}"
   git push --tags

@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "moelib"
+name = "flake8_scripts"
 version = "0.1.0"
 description = ""
 authors = ["Nyakku Shigure <sigure.qaq@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/ShigureLab/moelib"
-repository = "https://github.com/ShigureLab/moelib"
+homepage = "https://github.com/cattidea/paddle-flake8-scripts"
+repository = "https://github.com/cattidea/paddle-flake8-scripts"
 keywords = []
 classifiers = [
   "Operating System :: OS Independent",
@@ -29,7 +29,7 @@ isort = "^5.10.1"
 tomli = { version = "^2.0.1", python = "<3.11" }
 
 [tool.poetry.scripts]
-moelib = "moelib.__main__:main"
+# entry = "flake8_scripts.__main__:main"
 
 [tool.black]
 line-length = 120
