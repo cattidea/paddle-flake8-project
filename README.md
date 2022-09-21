@@ -20,8 +20,8 @@ pip install flake8_scripts
 
 ## Usage
 
-### remove-future
+### remove-future-import
 
 ```bash
-remove-future <path-globs> --fix
+remove-future-import <path-globs> --fix
 ```

@@ -30,7 +30,7 @@ tomli = { version = "^2.0.1", python = "<3.11" }
 
 [tool.poetry.scripts]
 # entry = "flake8_scripts.__main__:main"
-remove-future = "flake8_scripts.remove_future:main"
+remove-future-import = "flake8_scripts.remove_future_import:main"
 
 [tool.black]
 line-length = 120
