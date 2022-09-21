@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "moelib"
+version = "0.1.0"
+description = ""
+authors = ["Nyakku Shigure <sigure.qaq@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ShigureLab/moelib"
+repository = "https://github.com/ShigureLab/moelib"
+keywords = []
+classifiers = [
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+black = "^22.1"
+pytest-parallel = "^0.1.1"
+isort = "^5.10.1"
+tomli = { version = "^2.0.1", python = "<3.11" }
+
+[tool.poetry.scripts]
+moelib = "moelib.__main__:main"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+add_imports = ["from __future__ import annotations"]
+skip = ["setup.py", ".venv"]
+
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
