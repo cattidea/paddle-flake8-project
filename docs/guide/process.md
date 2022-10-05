@@ -4,6 +4,12 @@
 
 Flake8 小组整体的协作将会在 [Cattidea](https://github.com/cattidea) 组织中进行，以便相互之间协作，相关修改直接在 [cattidea/Paddle](https://github.com/cattidea/Paddle) **新建分支**修改即可，无需自己 fork。
 
+::: tip
+
+使用 cattidea 下 fork 的 Paddle 非强制，如果你更喜欢用自己 fork 好的 Paddle 的话，当然也是可以的～
+
+:::
+
 ## 环境准备
 
 ### 安装 Flake8
@@ -33,6 +39,12 @@ flake8 .
 # 不出意外是没有任何输出的，说明现在 flake8 全部文件都正常～
 ```
 
+::: tip
+
+有些时候可能因为未捕获的增量出现输出，如果输出的不是你所修复的错误码的话，先忽略就好，Nyakku 会尽快修复。
+
+:::
+
 ### 安装 pre-commit
 
 向 Paddle 贡献，pre-commit 的安装是必须的，如果不安装的话很容易会因为代码风格问题在 CI 卡住。
@@ -40,7 +52,7 @@ flake8 .
 ```bash
 # 安装 pre-commit
 pip install pre-commit==2.17.0
-# 在 Paddle 注册 pre-commit
+# 在 Paddle 注册 pre-commit hook
 pre-commit install
 ```
 
@@ -65,7 +77,7 @@ git switch -c <branch_name>
 这里可能做各种各样的修改，比如 F401 任务需要
 
 ```bash
-autoflake --in-place --remove-all-unused-imports --exclude=__init__.py --recursive ./python/paddle/fluid/tests/unittests/collective/
+autoflake --in-place --remove-all-unused-imports --exclude=__init__.py --ignore-pass-after-docstring --recursive ./python/paddle/fluid/tests/unittests/collective/
 ```
 
 这里利用 `autoflake` 将 `python/paddle/fluid/tests/unittests/collective/` 全部 F401 错误码都去除掉了～
@@ -97,14 +109,20 @@ git push origin <branch_name>
 
 首先要遵守 Paddle PR 模板，否则无法通过 CheckPRTemplate 这一 CI 流水线。
 
-在 `Describe` 部分详细描述做了什么修改，如果自动修改直接粘贴命令即可，如果手动修改应当详细说明修改原因和修改方式。
+在 `Describe` 部分详细描述做了什么修改，如果自动修改直接粘贴命令即可，如果手动修改应当详细说明修改原因和修改方式（更建议通过 review 的方式在手动修改的相关行上指出为什么这样修改，可以提高 reviewer 在 review 时候的效率，减少沟通成本）。
 
-此外增加一项 `Related links`，使用**列表**放一些链接，需包含 tracking issue、修复了的 issue 等等。
+此外增加一项 `Related links`，使用**列表**放一些链接，需包含 tracking issue、修复了的 issue 等等（修复的链接需要使用 `fix` 等关键字才能正确链接）。
 
-下面是一个模板：
+::: tip 为什么要用列表存放链接？
+
+GitHub 对列表中的链接有更好的渲染方式，可以自动展开 PR 标题和状态，这样可以方便 reviewer 更直观地了解相关 PR 是否已经 merge，以便跳转处理。
+
+:::
+
+下面是一个模板（[#46615](https://github.com/PaddlePaddle/Paddle/pull/46615)）：
 
 ````md
-<!-- Demo: https://github.com/PaddlePaddle/Paddle/pull/24810 -->
+<!-- Demo: https://github.com/PaddlePaddle/Paddle/pull/46615 -->
 
 ### PR types
 
@@ -125,7 +143,7 @@ Others
 修复 `python/paddle/fluid/tests/unittests/collective/` 目录 F401 unused import 存量 python 代码
 
 ```bash
-autoflake --in-place --remove-all-unused-imports --exclude=__init__.py --recursive ./python/paddle/fluid/tests/unittests/collective/
+autoflake --in-place --remove-all-unused-imports --ignore-pass-after-docstring --exclude=__init__.py --recursive ./python/paddle/fluid/tests/unittests/collective/
 ```
 
 ### Related links

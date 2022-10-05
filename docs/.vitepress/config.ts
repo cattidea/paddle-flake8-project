@@ -17,7 +17,10 @@ export default defineConfig({
             text: 'Flake8 tracking issue',
             link: 'https://github.com/PaddlePaddle/Paddle/issues/46039',
           },
-          { text: 'F401 Project', link: 'https://github.com/orgs/cattidea/projects/4' },
+          {
+            text: 'Flake8 错误码修复 Project',
+            link: 'https://github.com/orgs/cattidea/projects/4',
+          },
           {
             text: 'Flake8 Error Code (F)',
             link: 'https://flake8.pycqa.org/en/latest/user/error-codes.html',
