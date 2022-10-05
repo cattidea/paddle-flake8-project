@@ -19,6 +19,7 @@ class SixRemover(ast.NodeVisitor):
     def visit_Call(self, node: ast.Call):
         transformed_node = node
         match node:
+            # six.moves.xrange
             case ast.Call(
                 func=ast.Attribute(
                     value=ast.Attribute(
@@ -36,6 +37,23 @@ class SixRemover(ast.NodeVisitor):
                     args=args,
                     keywords=keywords,
                 )
+            # six.iteritems
+            case ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="six"),
+                    attr="iteritems",
+                ),
+                args=[dictionary],
+            ):
+                transformed_node = ast.Call(
+                    func=ast.Attribute(
+                        value=dictionary,
+                        attr="items",
+                    ),
+                    args=[],
+                    keywords=[],
+                )
+            # six.binary_type
             case _:
                 ...
 

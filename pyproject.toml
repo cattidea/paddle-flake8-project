@@ -27,6 +27,9 @@ pytest-parallel = "^0.1.1"
 isort = "^5.10.1"
 tomli = { version = "^2.0.1", python = "<3.11" }
 pytest = "^7.1.3"
+pyright = "^1.1.274"
+six = "^1.16.0"
+pytest-rerunfailures = "^10.2"
 
 [tool.poetry.scripts]
 # entry = "flake8_scripts.__main__:main"
