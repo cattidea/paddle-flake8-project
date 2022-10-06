@@ -25,7 +25,7 @@ def test_remove_iteritems():
     print(count)
     """
 
-    expected = """
+    expect = """
     import six
     from six import moves
 
@@ -42,5 +42,10 @@ def test_remove_iteritems():
     print(count)
     """
 
-    assert remove_six_from_text(inspect.cleandoc(source)) == inspect.cleandoc(expected)
-    assert run_code(inspect.cleandoc(source)) == run_code(inspect.cleandoc(expected))
+    source = inspect.cleandoc(source)
+    expect = inspect.cleandoc(expect)
+    actual = remove_six_from_text(source)
+
+    assert actual is not None
+    assert actual == expect
+    assert run_code(source) == run_code(expect)

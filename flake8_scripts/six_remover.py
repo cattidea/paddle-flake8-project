@@ -7,14 +7,94 @@ from typing import Optional
 from .utils.replace import Location, ReplacementInfo, replace_with_location
 from .utils.resolve import resolve_globs
 
+EMPTY_NODE = ast.Name("")
 
-class SixRemover(ast.NodeVisitor):
+
+class ReWriter(ast.NodeVisitor):
     def __init__(self):
         super().__init__()
         self.to_replace: list[ReplacementInfo] = []
 
     def generic_visit(self, node: ast.AST):
         ast.NodeVisitor.generic_visit(self, node)
+
+    def add_to_replace(self, node: ast.AST, replacement: ast.AST):
+        self.to_replace.append(
+            ReplacementInfo(
+                start=Location(lineno=node.lineno, col_offset=node.col_offset),
+                end=Location(lineno=node.end_lineno, col_offset=node.end_col_offset),  # type: ignore
+                replacement=ast.unparse(replacement),
+            )
+        )
+
+
+class SixRemover(ReWriter):
+    def visit_Attribute(self, node: ast.Attribute):
+        transformed_node = node
+        attr_map = {
+            "string_types": "str,",
+            "integer_types": "int,",
+            "class_types": "type,",
+            "text_type": "str",
+            "binary_type": "bytes",
+        }
+        match node:
+            case ast.Attribute(
+                value=ast.Name(
+                    id="six",
+                ),
+                attr="string_types" | "integer_types" | "class_types" | "text_type" | "binary_type" as attr,
+            ):
+
+                transformed_node = ast.parse(attr_map[attr])
+            case _:
+                ...
+        if transformed_node is not node:
+            self.add_to_replace(node, transformed_node)
+        else:
+            ast.NodeVisitor.generic_visit(self, node)
+
+    def visit_ImportFrom(self, node: ast.ImportFrom):
+        transformed_node = node
+        match node:
+            # from six.moves.queue import Queue -> from queue import Queue
+            case ast.ImportFrom(
+                module="six.moves.queue",
+                names=[ast.alias(name="Queue")],
+                level=0,
+            ):
+                transformed_node = ast.ImportFrom(
+                    module="queue",
+                    names=[ast.alias(name="Queue")],
+                    level=0,
+                )
+            # from six.moves import move_alias
+            case ast.ImportFrom(
+                module="six.moves",
+                names=[move_node],
+                level=0,
+            ):
+                match move_node:
+                    # from six.moves import zip_longest -> from itertools import zip_longest
+                    case ast.alias(name="zip_longest"):
+                        transformed_node = ast.ImportFrom(
+                            module="itertools",
+                            names=[ast.alias(name="zip_longest")],
+                            level=0,
+                        )
+                    # from six.moves import zip -> EMPTY_NODE
+                    case ast.alias(name="zip"):
+                        transformed_node = EMPTY_NODE
+                    case ast.alias(name="map"):
+                        transformed_node = EMPTY_NODE
+                    case _:
+                        ...
+            case _:
+                ...
+        if transformed_node is not node:
+            self.add_to_replace(node, transformed_node)
+        else:
+            ast.NodeVisitor.generic_visit(self, node)
 
     def visit_Call(self, node: ast.Call):
         transformed_node = node
@@ -105,41 +185,64 @@ class SixRemover(ast.NodeVisitor):
                 ...
 
         if transformed_node is not node:
-            self.to_replace.append(
-                ReplacementInfo(
-                    start=Location(lineno=node.lineno, col_offset=node.col_offset),
-                    end=Location(lineno=node.end_lineno, col_offset=node.end_col_offset),  # type: ignore
-                    replacement=ast.unparse(transformed_node),
+            self.add_to_replace(node, transformed_node)
+        else:
+            ast.NodeVisitor.generic_visit(self, node)
+
+
+class IsInstanceCleaner(ReWriter):
+    def visit_Call(self, node: ast.Call):
+        transformed_node = node
+        match node:
+            case ast.Call(
+                func=ast.Name(id="isinstance"),
+                args=[
+                    obj,  # type: ignore
+                    ast.Tuple(
+                        elts=[tp],
+                    ),
+                ],
+                keywords=[],
+            ):
+                transformed_node = ast.Call(
+                    func=ast.Name(id="isinstance"),
+                    args=[
+                        obj,
+                        tp,
+                    ],
+                    keywords=[],
                 )
-            )
+            case _:
+                ...
+        if transformed_node is not node:
+            self.add_to_replace(node, transformed_node)
+        else:
+            ast.NodeVisitor.generic_visit(self, node)
 
 
-def remove_six_from_text(text: str) -> Optional[str]:
-    tree = ast.parse(text)
-    trans = SixRemover()
-    trans.visit(tree)
-    to_replace = trans.to_replace
-    if not to_replace:
-        return None
+def remove_six_from_text(text: str) -> str:
+    passes: list[type[ReWriter]] = [
+        SixRemover,
+        IsInstanceCleaner,
+    ]
 
-    return replace_with_location(text, to_replace)
+    for pass_cls in passes:
+        tree = ast.parse(text)
+        pass_ = pass_cls()
+        pass_.visit(tree)
+        text = replace_with_location(text, pass_.to_replace)
+
+    return text
 
 
 def fix_file(file_path: str, fix: bool = False):
-    with open(file_path, "r") as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         text = f.read()
 
-    tree = ast.parse(text)
-    trans = SixRemover()
-    trans.visit(tree)
-    to_replace = trans.to_replace
-    if not to_replace:
-        return
-
-    text = replace_with_location(text, to_replace)
+    text = remove_six_from_text(text)
 
     if fix:
-        with open(file_path, "w") as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             f.write(text)
 
 
