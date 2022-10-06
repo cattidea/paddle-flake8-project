@@ -4,7 +4,7 @@ PaddlePaddle Flake8 引入计划 repo，用于存放一些可能会使用的脚�
 
 ## Projects
 
--  [F401](https://github.com/orgs/cattidea/projects/4)
+[Flake8 错误码修复](https://github.com/orgs/cattidea/projects/4/views/2)
 
 ## Scripts
 
@@ -13,14 +13,35 @@ PaddlePaddle Flake8 引入计划 repo，用于存放一些可能会使用的脚�
 ```bash
 git clone https://github.com/cattidea/paddle-flake8-project.git
 cd paddle-flake8-project
-# Need python >= 3.9
+# Need python >= 3.10
 pip install .
 ```
 
 ### Usage
 
+> 虽然是针对 Flake8 建的 repo，结果目前所有脚本都跟 Flake8 错误码无关 :joy:
+
 #### remove-future-import
 
 ```bash
 remove-future-import <path-globs> --fix
+```
+
+#### six-remover<sup>WIP</sup>
+
+```bash
+six-remover <path-globs> --fix
+```
+
+### Development
+
+```bash
+# Clone this repo
+git clone https://github.com/cattidea/paddle-flake8-project.git
+cd paddle-flake8-project
+# Install poetry, see https://python-poetry.org/
+# Install dependencies
+poetry install
+# Run tests
+poetry run pytest
 ```
