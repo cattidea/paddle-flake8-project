@@ -74,7 +74,7 @@ def test_remove_range():
     assert run_code(inspect.cleandoc(source)) == run_code(inspect.cleandoc(expected))
 
 
-def test_remove_moves_xrange():
+def test_remove_moves_range():
     source = """
     import six
     from six import moves

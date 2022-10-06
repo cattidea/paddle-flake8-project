@@ -37,6 +37,24 @@ class SixRemover(ast.NodeVisitor):
                     args=args,
                     keywords=keywords,
                 )
+            # six.moves.zip(*args) -> zip(*args)
+            case ast.Call(
+                func=ast.Attribute(
+                    value=ast.Attribute(
+                        value=ast.Name(id="six"),
+                        attr="moves",
+                    )
+                    | ast.Name(id="moves"),
+                    attr="zip",
+                ),
+                args=args,
+                keywords=keywords,
+            ):
+                transformed_node = ast.Call(
+                    func=ast.Name(id="zip"),
+                    args=args,
+                    keywords=keywords,
+                )
             # six.iteritems(d) -> d.items()
             case ast.Call(
                 func=ast.Attribute(
@@ -53,7 +71,36 @@ class SixRemover(ast.NodeVisitor):
                     args=[],
                     keywords=[],
                 )
-            # six.binary_type
+            # six.b(s)
+            case ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="six"),
+                    attr="b",
+                ),
+                args=[s],
+                keywords=[],
+            ):
+                match s:
+                    # six.b('literal_string') -> b'literal_string'
+                    case ast.Constant(value=literal_string):
+                        transformed_node = ast.Constant(value=literal_string.encode())
+                    # six.b(s) -> s.encode("latin-1")
+                    case expr:
+                        transformed_node = ast.Call(
+                            func=ast.Attribute(value=expr, attr="encode"),
+                            args=[ast.Constant(value="latin-1")],
+                            keywords=[],
+                        )
+            # six.u(s) -> s
+            case ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="six"),
+                    attr="u",
+                ),
+                args=[s],
+                keywords=[],
+            ):
+                transformed_node = s
             case _:
                 ...
 
