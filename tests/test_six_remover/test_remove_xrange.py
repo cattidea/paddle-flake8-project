@@ -49,3 +49,47 @@ def test_remove_moves_xrange():
 
     assert remove_six_from_text(inspect.cleandoc(source)) == inspect.cleandoc(expected)
     assert run_code(inspect.cleandoc(source)) == run_code(inspect.cleandoc(expected))
+
+
+def test_remove_range():
+    source = """
+    import six
+    from six import moves
+
+    numbers = [2, 3, 3, 3, 3]
+    for i in six.moves.range(1, len(numbers), 2):
+        print(numbers[i])
+    """
+
+    expected = """
+    import six
+    from six import moves
+
+    numbers = [2, 3, 3, 3, 3]
+    for i in range(1, len(numbers), 2):
+        print(numbers[i])
+    """
+
+    assert remove_six_from_text(inspect.cleandoc(source)) == inspect.cleandoc(expected)
+    assert run_code(inspect.cleandoc(source)) == run_code(inspect.cleandoc(expected))
+
+
+def test_remove_moves_xrange():
+    source = """
+    import six
+    from six import moves
+
+    for i in moves.range(1000, 9, -1):
+        print(i)
+    """
+
+    expected = """
+    import six
+    from six import moves
+
+    for i in range(1000, 9, -1):
+        print(i)
+    """
+
+    assert remove_six_from_text(inspect.cleandoc(source)) == inspect.cleandoc(expected)
+    assert run_code(inspect.cleandoc(source)) == run_code(inspect.cleandoc(expected))
