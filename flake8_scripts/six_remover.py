@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import ast
-from typing import Optional
 
 from .utils.replace import Location, ReplacementInfo, replace_with_location
 from .utils.resolve import resolve_globs
