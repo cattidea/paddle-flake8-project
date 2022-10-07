@@ -220,14 +220,14 @@ class IsInstanceCleaner(ReWriter):
             ast.NodeVisitor.generic_visit(self, node)
 
 
-def remove_six_from_text(text: str) -> str:
+def remove_six_from_text(text: str, filepath: str = "<unknown>") -> str:
     passes: list[type[ReWriter]] = [
         SixRemover,
         IsInstanceCleaner,
     ]
 
     for pass_cls in passes:
-        tree = ast.parse(text)
+        tree = ast.parse(text, filepath)
         pass_ = pass_cls()
         pass_.visit(tree)
         text = replace_with_location(text, pass_.to_replace)
@@ -239,7 +239,7 @@ def fix_file(file_path: str, fix: bool = False):
     with open(file_path, "r", encoding="utf-8") as f:
         text = f.read()
 
-    text = remove_six_from_text(text)
+    text = remove_six_from_text(text, file_path)
 
     if fix:
         with open(file_path, "w", encoding="utf-8") as f:
