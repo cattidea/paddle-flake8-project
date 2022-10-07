@@ -60,6 +60,16 @@ pre-commit install
 
 这里以解决 `python/paddle/fluid/tests/unittests/collective` 目录全部 F401 错误码为例（[#46615](https://github.com/PaddlePaddle/Paddle/pull/46615)）
 
+::: danger
+
+我们的修复包含全部 Python 文件（`.py` 扩展名），但不包含以下文件
+
+-  `python/paddle/fluid/` 目录下的文件，但 `python/paddle/fluid/tests/` 目录要单独保留，因为前者包含了大量即将退场的 API 代码，因此暂不修复，而后者为单测目录，需要保留
+-  自动生成的文件，如 `python/paddle/fluid/distributed/ps_pb2.py`，`_pb2.py` 后缀的文件大概率是利用 protoc 从 proto 文件自动生成的 protobuf 处理文件，因此不需要修复
+-  第三方库，如 `python/paddle/utils/gast/`，这些是于 [#34556](https://github.com/PaddlePaddle/Paddle/pull/34556) 引入的第三方库
+
+:::
+
 ### 创建新分支
 
 ```bash
