@@ -132,7 +132,7 @@ GitHub 对列表中的链接有更好的渲染方式，可以自动展开 PR 标
 下面是一个模板（[#46615](https://github.com/PaddlePaddle/Paddle/pull/46615)）：
 
 ````md
-<!-- Demo: https://github.com/PaddlePaddle/Paddle/pull/46615 -->
+<!-- Demo: https://github.com/PaddlePaddle/Paddle/pull/24810 -->
 
 ### PR types
 
@@ -159,7 +159,7 @@ autoflake --in-place --remove-all-unused-imports --ignore-pass-after-docstring -
 ### Related links
 
 -  Flake8 tracking issue: #46039
--  F401 project: https://github.com/orgs/cattidea/projects/4/views/1
+-  F401 project: https://github.com/orgs/cattidea/projects/4/views/7
 -  配置文件更新: #46616
 -  fixes https://github.com/cattidea/paddle-flake8-project/issues/28
 ````
