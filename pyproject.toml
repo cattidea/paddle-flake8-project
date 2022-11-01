@@ -34,6 +34,7 @@ pytest-rerunfailures = "^10.2"
 # entry = "flake8_scripts.__main__:main"
 remove-future-import = "flake8_scripts.remove_future_import:main"
 six-remover = "flake8_scripts.six_remover:main"
+u-string-remover = "flake8_scripts.u_string_remover:main"
 
 [tool.black]
 line-length = 120

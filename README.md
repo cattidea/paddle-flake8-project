@@ -27,10 +27,16 @@ pip install .
 remove-future-import <path-globs> --fix
 ```
 
-#### six-remover<sup>WIP</sup>
+#### six-remover
 
 ```bash
 six-remover <path-globs> --fix
+```
+
+#### u-string-remover
+
+```bash
+u-string-remover <path-globs> --fix
 ```
 
 ### Development
