@@ -22,7 +22,6 @@ python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.1"
-pytest-parallel = "^0.1.1"
 isort = "^5.10.1"
 tomli = { version = "^2.0.1", python = "<3.11" }
 pytest = "^7.1.3"
